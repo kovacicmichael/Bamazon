@@ -89,7 +89,7 @@ function updateInventory(quantity, userResponse){
 					var currentStock = res[0].stock_quantity
 	
 
-		connection.query("UPDATE roducts SET ? WHERE ?",
+		connection.query("UPDATE products SET ? WHERE ?",
 			[
 				{
 					stock_quantity: currentStock - quantity
