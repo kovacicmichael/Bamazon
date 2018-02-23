@@ -16,8 +16,4 @@ The Customer aspect of the application will allow the use to view what items are
 
 ![CLI Images](images/quantityImage.png)
 
-![CLI Images](images/orderReceived.png)
-
-![CLI Images](images/insuficientStock.png)
-
 ![CLI Images](images/endImage.png)
