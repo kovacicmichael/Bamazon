@@ -27,13 +27,13 @@ Michael Kovacic
 ***
 
 ## Technologies Used
-Javascript
-MySQL
-NodeJS
-npm Packages:
-    -mysql
-    -inquirer
-    -cli-table
+* Javascript
+* MySQL
+* NodeJS
+* npm Packages:
+    * mysql
+    * inquirer
+    * cli-table
 
 ***
 
