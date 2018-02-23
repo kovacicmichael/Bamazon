@@ -1,5 +1,6 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+var Table = require('cli-table');
 
 
 var connection = mysql.createConnection({
@@ -16,8 +17,42 @@ connection.connect(function(error){
 	if(error) throw error;
 
 	console.log("connected as id " + connection.threadId);
-	itemDisplay();
+	table();
 });
+
+function table(){
+
+	connection.query('SELECT id, product_name, price FROM products', function(err, result){
+		if(err) console.log(err);
+
+		var table = new Table({
+    		head: ['Item ID', 'Product Name', 'Price'],
+  			style: {
+					head: ['blue'],
+					compact: false,
+					colAligns: ['center'],
+			}
+		});
+
+		for(var i = 0; i < result.length; i++){
+			table.push(
+				[result[i].id, result[i].product_name, result[i].price]
+			);
+		}
+
+		console.log("Items available for sale include: \n");
+
+		productArray = [];
+
+		for(var i = 0; i < result.length; i++){
+			productArray.push(result[i].product_name);
+		};
+	console.log(table.toString());
+	//itemDisplay();
+	orderItem();
+
+	})
+}
 
 
 function itemDisplay(){
@@ -29,7 +64,7 @@ function itemDisplay(){
 		productArray = [];
 
 		for(var i = 0; i < res.length; i++){
-			console.log(res[i].product_id + " | " + res[i].product_name + " | " + res[i].department_name + " | " + res[i].price + " | " + res[i].stock_quantity)
+			console.log(res[i].id + " | " + res[i].product_name + " | " + res[i].department_name + " | " + res[i].price + " | " + res[i].stock_quantity)
 			productArray.push(res[i].product_name);
 		};
 
@@ -50,7 +85,7 @@ function orderItem(){
 		if(confirmResponse.confirm){
 			inquirer.prompt([
 				{
-					type: "rawlist",
+					type: "list",
 					name: "chosenProduct",
 					message: "Which product would you like to buy?",
 					choices: productArray
@@ -97,7 +132,7 @@ function orderAnotherItem(){
 		if(confirmResponse.confirm){
 			inquirer.prompt([
 				{
-					type: "rawlist",
+					type: "list",
 					name: "chosenProduct",
 					message: "Which product would you like to buy?",
 					choices: productArray
@@ -116,9 +151,7 @@ function orderAnotherItem(){
 						console.log("-------------------------------");
 						console.log("Thank you for your order!");
 						console.log("Your order has been recieved and will be processed shortly...");
-						totalCost(productResponse.amountProduct, productResponse.chosenProduct);
-						//updateInventory(productResponse.amountProduct, productResponse.chosenProduct, totalCost(productResponse.amountProduct, productResponse.chosenProduct))
-						//updateInventory(productResponse.amountProduct, productResponse.chosenProduct);
+						updateInventory(productResponse.amountProduct, productResponse.chosenProduct);
 
 					}else{
 						console.log("I am sorry, but that item does not have enough in stock for this transaction...")
@@ -137,11 +170,16 @@ function orderAnotherItem(){
 
 
 
-function updateInventory(quantity, userResponse, cb){
+function updateInventory(quantity, userResponse){
 
 	connection.query("SELECT * FROM products WHERE ?", {product_name: userResponse}, function(err, res){
 			//console.log(res);
 					var currentStock = res[0].stock_quantity
+					var currentPrice = res[0].price;
+					var total = currentPrice * quantity;
+
+					console.log("Your total cost will be: \n" + total)
+					console.log("------------------")
 	
 
 		connection.query("UPDATE products SET ? WHERE ?",
@@ -156,39 +194,42 @@ function updateInventory(quantity, userResponse, cb){
 			function(err, res){
 				if(err) throw err;
 
-				console.log("Inventory Updated!\n");
-				//displayInventory();
+				//console.log("Inventory Updated!\n");
+				displayInventory();
+				//orderAnotherItem();
 			}
 
 		);
 	})
 }
 
-function totalCost(quantity, userResponse){
-	connection.query("SELECT * FROM products WHERE ?", {product_name: userResponse}, function(err, res){
-		console.log("this is working")
-		var currentPrice = res[0].price;
-
-		var total = currentPrice * quantity;
-
-		console.log("Your total cost will be: \n" + total)
-		console.log("------------------")
-		displayInventory();
-
-	});
-}
 
 function displayInventory(){
-	connection.query("SELECT * FROM products", function(err, res){
+	connection.query("SELECT * FROM products", function(err, result){
 		if(err) throw err;
 
 		console.log("Current inventory and prices: \n");
 
+		var table = new Table({
+    		head: ['Item ID', 'Product Name', 'Price', "Quantity"],
+  			style: {
+					head: ['blue'],
+					compact: false,
+					colAligns: ['center'],
+			}
+		});
+
+		for(var i = 0; i < result.length; i++){
+			table.push(
+				[result[i].id, result[i].product_name, result[i].price, result[i].stock_quantity]
+			);
+		}
+		console.log(table.toString());
+
 		productArray = [];
 
-		for(var i = 0; i < res.length; i++){
-			console.log(res[i].product_name + " | " + res[i].price + " | " + res[i].stock_quantity)
-			productArray.push(res[i].product_name);
+		for(var i = 0; i < result.length; i++){
+			productArray.push(result[i].product_name);
 		};
 
 		orderAnotherItem();
