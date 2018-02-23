@@ -1,4 +1,10 @@
 # Welcome to Bamazon
 
-Bamazon is an application that allows its users to purchase items from its existing stock.
+Bamazon is an interactive shopping Node app, that uses Node.js and MySQL to allow its users to view and purchase a varitety of items from its existing stock as a Customer.
+
+***
+
+## Overview
+
+
 
