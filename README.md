@@ -21,3 +21,21 @@ The Customer aspect of the application will allow the use to view what items are
 ![CLI Images](images/endImage.png)
 
 ***
+## Contributors
+Michael Kovacic
+
+***
+
+## Technologies Used
+Javascript
+MySQL
+NodeJS
+npm Packages:
+    -mysql
+    -inquirer
+    -cli-table
+
+***
+
+## License
+Copyright 2018 University of Denver Coding Bootcamp - Michael Kovacic
