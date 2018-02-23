@@ -15,3 +15,4 @@ The Customer aspect of the application will allow the use to view what items are
 ![CLI Images](images/openingImage.png)
 
 
+![CLI Images](images/quantityImage.png)
