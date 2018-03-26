@@ -35,7 +35,7 @@ function managerDisplay(){
 		}else if(managerResponse.chosenOption === "View Low Inventory"){
 			console.log("inventory")
 			lowInventory();
-		}else if(managerResponse.chosenOption === "Add to Inventory"){
+		}else if(managerResponse.chosenOption === "Add New Product"){
 			console.log("here")
 			inquirer.prompt([
 					{
@@ -63,6 +63,10 @@ function managerDisplay(){
 				addInventory(productResponse.itemName, productResponse.department, productResponse.price, productResponse.stock);
 
 			})
+		}else if(managerResponse.chosenOption === "Add to Inventory"){
+
+
+			
 		}
 	})
 }
