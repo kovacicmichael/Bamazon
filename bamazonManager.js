@@ -42,17 +42,17 @@ function managerDisplay(){
 						type: "input",
 						name: "itemName",
 						message: "What is the name of the product?"
-					}
+					},
 					{
 						type: "input",
 						name: "department",
 						message: "What department is the product found in?"
-					}
+					},
 					{
 						type: "input",
 						name: "price",
 						message: "What is the price of the product?"
-					}
+					},
 					{
 						type: "input",
 						name: "stock",
@@ -60,13 +60,47 @@ function managerDisplay(){
 					}
 			]).then(function(productResponse){
 
-				addInventory(productResponse.itemName, productResponse.department, productResponse.price, productResponse.stock);
+				addItem(productResponse.itemName, productResponse.department, productResponse.price, productResponse.stock);
 
 			})
 		}else if(managerResponse.chosenOption === "Add to Inventory"){
 
+			let optionArray = [];
 
-			
+				connection.query("SELECT * FROM products", function(err, res){
+					if(err) throw err;
+
+					console.log("Current Inventory: \n");
+
+					for(var i = 0; i < res.length; i++){
+
+						optionArray.push(res[i].product_name)
+					};
+
+					inquirer.prompt([
+							{
+								type: "list",
+								name: "chosenItem",
+								message: "What item would you like to stock?",
+								choices: optionArray
+							},
+							{
+								type:"input",
+								name:"stock",
+								message:"How many items do you want to stock?"
+							}
+					]).then(function(chosen){
+
+						console.log(chosen.chosenItem, chosen.stock)
+						addInventory(chosen.chosenItem, chosen.stock)
+
+
+
+					})
+
+				})
+
+
 		}
 	})
 }
@@ -127,7 +161,7 @@ function lowInventory(){
 	})
 }
 
-function addInventory(name, department, price, stock){
+function addItem(name, department, price, stock){
 	connection.query("INSERT INTO products SET ?",
 	{
 		product_name: name,
@@ -141,6 +175,30 @@ function addInventory(name, department, price, stock){
 	 	console.log("Item was added!")
 	 	itemDisplay();
 	})
+
+}
+
+function addInventory(item, stock){
+	console.log("addinventory function")
+	console.log(item, stock)
+	connection.query("UPDATE products SET ? WHERE ??", [{stock_quantity: stock}, {product_name: item}],
+	function(err, res){
+		if(err) throw err;
+
+		console.log(res)
+
+
+		// if(stock < 2){
+		// 	console.log(stock + " item added for " + item)
+		// }else{
+		// 	console.log(stock + " items added for " + item)
+		// }
+		// console.log("");
+		// console.log("")
+		// itemDisplay();
+	}
+	)
+
 
 }
 
