@@ -1,5 +1,6 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+var Table = require('cli-table');
 
 
 var connection = mysql.createConnection({
@@ -30,13 +31,10 @@ function managerDisplay(){
 	]).then(function(managerResponse){
 
 		if(managerResponse.chosenOption === "View Products for Sale"){
-			//console.log("it works")
-			itemDisplay();
+			table();
 		}else if(managerResponse.chosenOption === "View Low Inventory"){
-			console.log("inventory")
 			lowInventory();
 		}else if(managerResponse.chosenOption === "Add New Product"){
-			console.log("here")
 			inquirer.prompt([
 					{
 						type: "input",
@@ -99,53 +97,92 @@ function managerDisplay(){
 					})
 
 				})
-
-
+		}else if(managerResponse.chosenOption === "QUIT"){
+			console.log("You are logged out")
 		}
 	})
 }
 
 
-// function chooseAnother(){
-// 	inquirer.prompt([
-// 			{
-// 				type: "rawlist",
-// 				name: "chosenOption",
-// 				message: "Would you like to?",
-// 				choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product"]
-// 			}
-// 	]).then(function(managerResponse){
+function secondPrompt(){
+	inquirer.prompt([
+		{
+			type: "confirm",
+			name: "confirm",
+			message: "Would you like to continue?"
+		}
+	]).then(function(response){
+		if(response.confirm){
+			managerDisplay()
+		}else{
+			console.log("You are logged out")
+		}
+	})
+}
 
-// 		if(managerResponse.chosenOption === "View Products for Sale"){
-// 			console.log("it works")
-// 			itemDisplay();
-// 		}else if(managerResponse.chosenOption === "View Low Inventory"){
-// 			console.log("inventory")
-// 			lowInventory();
-// 		}else if(managerResponse.chosenOption === "Add to Inventory"){
-// 			console.log("here")
-// 		}
-// 	})
-// }
+function table(){
 
+	connection.query('SELECT * FROM products', function(err, result){
+		if(err) console.log(err);
 
-function itemDisplay(){
-	connection.query("SELECT * FROM products", function(err, res){
-		if(err) throw err;
+		var table = new Table({
+    		head: ['Item ID', 'Product Name', 'Department', 'Price', 'Stock'],
+  			style: {
+					head: ['blue'],
+					compact: false,
+					colAligns: ['center'],
+			}
+		});
+
+		for(var i = 0; i < result.length; i++){
+			table.push(
+				[result[i].id, result[i].product_name, result[i].department_name, result[i].price, result[i].stock_quantity]
+			);
+		}
 
 		console.log("Items available for sale include: \n");
 
-		for(var i = 0; i < res.length; i++){
+		productArray = [];
 
-			console.log(res[i].id + " | " + res[i].product_name + " | " + res[i].department_name + " | " + res[i].price + " | " + res[i].stock_quantity)
-		
+		for(var i = 0; i < result.length; i++){
+			productArray.push(result[i].product_name);
 		};
+	console.log(table.toString());
+	
+	secondPrompt();
 	})
-};
+}
+
+// function itemDisplay(){
+// 	connection.query("SELECT * FROM products", function(err, res){
+// 		if(err){ 
+// 			throw err;
+// 		}else{
+// 			console.log("Items available for sale include: \n");
+// 			for(var i = 0; i < res.length; i++){
+
+// 				console.log(res[i].id + " | " + res[i].product_name + " | " + res[i].department_name + " | " + res[i].price + " | " + res[i].stock_quantity)
+			
+// 			};
+// 			secondPrompt();
+// 		}
+
+		
+// 	})
+// };
 
 function lowInventory(){
 	connection.query("SELECT * FROM products", function(err, res){
 		if(err) throw err;
+
+		var table = new Table({
+    		head: ['Item ID', 'Product Name', 'Department', 'Price', 'Stock'],
+  			style: {
+					head: ['blue'],
+					compact: false,
+					colAligns: ['center'],
+			}
+		});
 
 		console.log("Stock is low on these items: \n");
 
@@ -154,10 +191,13 @@ function lowInventory(){
 
 			if(stock <= 5){
 
-			console.log(res[i].id + " | " + res[i].product_name + " | " + res[i].department_name + " | " + res[i].price + " | " + res[i].stock_quantity)
-			
+			table.push(
+				[result[i].id, result[i].product_name, result[i].department_name, result[i].price, result[i].stock_quantity]
+			);			
 			};
 		};
+		console.log(table.toString());
+		secondPrompt();
 	})
 }
 
@@ -173,7 +213,7 @@ function addItem(name, department, price, stock){
 	 	if(err) throw err;
 
 	 	console.log("Item was added!")
-	 	itemDisplay();
+	 	table();
 	})
 
 }
@@ -181,25 +221,30 @@ function addItem(name, department, price, stock){
 function addInventory(item, stock){
 	console.log("addinventory function")
 	console.log(item, stock)
-	connection.query("UPDATE products SET ? WHERE ??", [{stock_quantity: stock}, {product_name: item}],
+
+	let currentStock;
+	connection.query("SELECT * FROM products WHERE ?", {product_name: item},
 	function(err, res){
+		if(err) throw err;
+		console.log("currnet stock " + res[0].stock_quantity)
+		currentStock = res[0].stock_quantity
+		console.log("stock " + stock)
+
+		let updateStock = parseInt(currentStock) + parseInt(stock)
+		console.log("update stock " + updateStock)
+
+		connection.query("UPDATE products SET ? WHERE ?", [{
+		stock_quantity: updateStock
+		}, {
+		product_name: item
+		}],
+		function(err, res){
 		if(err) throw err;
 
 		console.log(res)
-
-
-		// if(stock < 2){
-		// 	console.log(stock + " item added for " + item)
-		// }else{
-		// 	console.log(stock + " items added for " + item)
-		// }
-		// console.log("");
-		// console.log("")
-		// itemDisplay();
-	}
-	)
-
-
+		table();
+		})
+	})
 }
 
 

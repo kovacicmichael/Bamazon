@@ -2,7 +2,7 @@ var mysql = require("mysql");
 var inquirer = require("inquirer");
 var Table = require('cli-table');
 
-
+//connect with local sql database
 var connection = mysql.createConnection({
 	host: "localhost",
 	port: 8889,
@@ -19,7 +19,7 @@ connection.connect(function(error){
 	console.log("connected as id " + connection.threadId);
 	table();
 });
-
+//function to render the available items to the console in a cli table
 function table(){
 
 	connection.query('SELECT id, product_name, price FROM products', function(err, result){
@@ -48,30 +48,13 @@ function table(){
 			productArray.push(result[i].product_name);
 		};
 	console.log(table.toString());
-	//itemDisplay();
+	
 	orderItem();
 
 	})
 }
 
-
-function itemDisplay(){
-	connection.query("SELECT * FROM products", function(err, res){
-		if(err) throw err;
-
-		console.log("Items available for sale include: \n");
-
-		productArray = [];
-
-		for(var i = 0; i < res.length; i++){
-			console.log(res[i].id + " | " + res[i].product_name + " | " + res[i].department_name + " | " + res[i].price + " | " + res[i].stock_quantity)
-			productArray.push(res[i].product_name);
-		};
-
-		orderItem();
-	})
-};
-
+//begins prompt to determine what the user wants to do
 function orderItem(){
 
 	inquirer.prompt([
@@ -96,10 +79,8 @@ function orderItem(){
 					message: "What quantity of the item would you like?"
 				}
 			]).then(function(productResponse){
-				//console.log("this is working")
+				//query to database based off of user responses
 				connection.query("SELECT * FROM products WHERE ?", {product_name: productResponse.chosenProduct}, function(err, res){
-
-					//console.log(res)
 					if(productResponse.amountProduct <= res[0].stock_quantity){
 						console.log("-------------------------------");
 						console.log("Thank you for your order!");
@@ -119,7 +100,7 @@ function orderItem(){
 		}
 	})
 }
-
+//function to be called after the initiial start of the application, prompts the user with a different question than the first
 function orderAnotherItem(){
 	inquirer.prompt([
 			{
@@ -158,8 +139,6 @@ function orderAnotherItem(){
 						orderAnotherItem();
 					}
 				})
-
-
 			})
 		}else{
 			console.log("Thank you for your business!  Come back soon!");
@@ -167,21 +146,17 @@ function orderAnotherItem(){
 		}
 	})
 }
-
-
-
+//called after the user decides which product they want, parameters detrermined in order item function
 function updateInventory(quantity, userResponse){
 
 	connection.query("SELECT * FROM products WHERE ?", {product_name: userResponse}, function(err, res){
-			//console.log(res);
-					var currentStock = res[0].stock_quantity
-					var currentPrice = res[0].price;
-					var total = currentPrice * quantity;
-
-					console.log("Your total cost will be: \n" + total)
-					console.log("------------------")
+		var currentStock = res[0].stock_quantity
+		var currentPrice = res[0].price;
+		var total = currentPrice * quantity;
+		//will print out the total cost to the second decimal point
+		console.log("Your total cost will be: \n" + parseFloat(total).toFixed(2))
+		console.log("------------------")
 	
-
 		connection.query("UPDATE products SET ? WHERE ?",
 			[
 				{
@@ -194,16 +169,13 @@ function updateInventory(quantity, userResponse){
 			function(err, res){
 				if(err) throw err;
 
-				//console.log("Inventory Updated!\n");
-				displayInventory();
-				//orderAnotherItem();
+				orderItem()
 			}
 
 		);
 	})
 }
-
-
+//this function is only needed if you want the "order another item" prompt
 function displayInventory(){
 	connection.query("SELECT * FROM products", function(err, result){
 		if(err) throw err;
