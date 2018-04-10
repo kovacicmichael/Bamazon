@@ -19,7 +19,7 @@ connection.connect(function(error){
 
 	managerDisplay();
 });
-
+//initial prompt for the manager 
 function managerDisplay(){
 	inquirer.prompt([
 			{
@@ -57,7 +57,7 @@ function managerDisplay(){
 						message: "How many items of the product are in stock?"
 					}
 			]).then(function(productResponse){
-
+				//passes the managers responses as parameters to the addItem function which inputs them into the database
 				addItem(productResponse.itemName, productResponse.department, productResponse.price, productResponse.stock);
 
 			})
@@ -88,12 +88,8 @@ function managerDisplay(){
 								message:"How many items do you want to stock?"
 							}
 					]).then(function(chosen){
-
-						console.log(chosen.chosenItem, chosen.stock)
+						//passes choices as parameters to add the amount of stock to the items inventory in the DB
 						addInventory(chosen.chosenItem, chosen.stock)
-
-
-
 					})
 
 				})
@@ -103,7 +99,7 @@ function managerDisplay(){
 	})
 }
 
-
+//propmpts the manager to continue the program
 function secondPrompt(){
 	inquirer.prompt([
 		{
@@ -119,7 +115,7 @@ function secondPrompt(){
 		}
 	})
 }
-
+//cli display table for the available products
 function table(){
 
 	connection.query('SELECT * FROM products', function(err, result){
@@ -152,25 +148,7 @@ function table(){
 	secondPrompt();
 	})
 }
-
-// function itemDisplay(){
-// 	connection.query("SELECT * FROM products", function(err, res){
-// 		if(err){ 
-// 			throw err;
-// 		}else{
-// 			console.log("Items available for sale include: \n");
-// 			for(var i = 0; i < res.length; i++){
-
-// 				console.log(res[i].id + " | " + res[i].product_name + " | " + res[i].department_name + " | " + res[i].price + " | " + res[i].stock_quantity)
-			
-// 			};
-// 			secondPrompt();
-// 		}
-
-		
-// 	})
-// };
-
+//displays the products with a stock less than or equal to 5
 function lowInventory(){
 	connection.query("SELECT * FROM products", function(err, res){
 		if(err) throw err;
@@ -200,7 +178,7 @@ function lowInventory(){
 		secondPrompt();
 	})
 }
-
+//allows the manager to add an item to the database
 function addItem(name, department, price, stock){
 	connection.query("INSERT INTO products SET ?",
 	{
@@ -217,7 +195,7 @@ function addItem(name, department, price, stock){
 	})
 
 }
-
+//adds to the inventory to any item in the database
 function addInventory(item, stock){
 	console.log("addinventory function")
 	console.log(item, stock)
@@ -248,11 +226,5 @@ function addInventory(item, stock){
 }
 
 
-
-
-
-
-// 	productArray.push(res[i].product_name);
-// productArray = [];
 
 

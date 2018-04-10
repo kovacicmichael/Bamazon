@@ -150,17 +150,19 @@ function orderAnotherItem(){
 function updateInventory(quantity, userResponse){
 
 	connection.query("SELECT * FROM products WHERE ?", {product_name: userResponse}, function(err, res){
-		var currentStock = res[0].stock_quantity
-		var currentPrice = res[0].price;
-		var total = currentPrice * quantity;
+		let currentStock = res[0].stock_quantity;
+		let currentPrice = res[0].price;
+		let currentSales = res[0].product_sales;
+		let total = currentPrice * quantity;
 		//will print out the total cost to the second decimal point
 		console.log("Your total cost will be: \n" + parseFloat(total).toFixed(2))
 		console.log("------------------")
-	
+		//updates the stock quantity and adds to the products sales
 		connection.query("UPDATE products SET ? WHERE ?",
 			[
 				{
-					stock_quantity: currentStock - quantity
+					stock_quantity: currentStock - quantity,
+					product_sales: currentSales + total
 				},
 				{
 					product_name: userResponse
