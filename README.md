@@ -12,13 +12,9 @@ The Customer aspect of the application will allow the use to view what items are
 
 #### Application Progression
 
-![CLI Images](images/openingImage.png)
+![CLI Images](videos/customer.gif)
 ***
-![CLI Images](images/orderReceived.png)
-***
-![CLI Images](images/quantityImage.png)
-***
-![CLI Images](images/endImage.png)
+
 
 ***
 ## Contributors
