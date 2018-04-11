@@ -17,13 +17,22 @@ The Customer aspect of the application will allow the use to view what items are
 
 ### Bamazon Manager Portal
 
-The Manager portion of the application uses inquirer prompt to allow the user to navigate through the process.  This portal allows the manager to view products for sale, view low inventory, add to inventory, add new product
+The Manager portion of the application uses inquirer prompt to allow the user to navigate through the program.  This portal allows the manager to view products for sale, view low inventory, add to inventory, or add new products.  Viewing products for sale lists out all available products in the database in a cli-table.  Viewing the low inventory will display all products with a stock quanitity of 5 or less.  Adding to inventory allows the manager to add stock to any product, and adding a new product enables the manager to create new products in the database.
 
 #### Application Progression
 
 ![CLI Images](videos/manager.gif)
-
 ***
+
+### Bamazon Supervisor Portal
+
+The SUpervisor portion of the application has only two main functions.  First, utilizing two tables, it allows the supervisor to see the overhead costs and profit for each department.  This is accomplished through an inner join of the "departments" and "products" tables.  Second, the supervisor can create a new department on the "departments" table.
+
+#### Application Progression
+
+![CLI Images](videos/supervisor.gif)
+***
+
 ## Contributors
 Michael Kovacic
 
