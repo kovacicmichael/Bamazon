@@ -11,7 +11,6 @@ var connection = mysql.createConnection({
 	database: "bamazon_db"
 });
 
-
 connection.connect(function(error){
 	if(error) throw error;
 
@@ -19,7 +18,7 @@ connection.connect(function(error){
 
 	supervisorOptions();
 });
-
+//prompts the supervisor to view product sales by department, create department, or quit
 function supervisorOptions(){
 
 	inquirer.prompt([
@@ -30,9 +29,7 @@ function supervisorOptions(){
 			choices: ["View Product Sales by Department", "Create New Department", "QUIT"]
 		}
 	]).then(function(response){
-		console.log(response)
 		if(response.chosenOption === 'View Product Sales by Department'){
-			console.log("here")
 			viewSales();
 		}else if(response.chosenOption === 'Create New Department'){
 			inquirer.prompt([
@@ -52,10 +49,9 @@ function supervisorOptions(){
 		}else if(response.chosenOption === 'QUIT'){
 			console.log("You are logged out.")
 		}
-
 	})
 }
-
+//joins the department and product tables and displays the data in a cli table
 function viewSales(){
 	connection.query("SELECT departments.department_id, departments.department_name, departments.over_head_costs, products.product_sales " + 
 		"FROM departments " + 
@@ -63,7 +59,6 @@ function viewSales(){
 		"GROUP BY departments.department_name " +
 		"ORDER BY departments.department_id", 
 		function(err, result){
-			
 			var table = new Table({
 	    		head: ['Department ID', 'Department Name', 'Over Head Costs', 'Product Sales', 'Total Profits'],
 	  			style: {
@@ -85,7 +80,7 @@ function viewSales(){
 			secondPrompt();
 	})
 }
-
+//receives parameters from supervisor prompt and then creates a new department
 function createDepartment(name, cost){
 	connection.query("INSERT into departments SET ?",
 		{
@@ -99,7 +94,7 @@ function createDepartment(name, cost){
 			secondPrompt();
 		})
 }
-
+//after each functionality this will revisit what the supervisor wants to do
 function secondPrompt(){
 	inquirer.prompt([
 		{

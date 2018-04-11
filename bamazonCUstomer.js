@@ -21,7 +21,6 @@ connection.connect(function(error){
 });
 //function to render the available items to the console in a cli table
 function table(){
-
 	connection.query('SELECT id, product_name, price FROM products', function(err, result){
 		if(err) console.log(err);
 
@@ -33,30 +32,23 @@ function table(){
 					colAligns: ['center'],
 			}
 		});
-
 		for(var i = 0; i < result.length; i++){
 			table.push(
 				[result[i].id, result[i].product_name, result[i].price]
 			);
 		}
-
 		console.log("Items available for sale include: \n");
-
-		productArray = [];
-
+		//the for loop pushes all of the product names into the productArray which is used for the choices in the prompts below
 		for(var i = 0; i < result.length; i++){
 			productArray.push(result[i].product_name);
 		};
-	console.log(table.toString());
-	
-	orderItem();
-
+		console.log(table.toString());
+		orderItem();
 	})
 }
 
 //begins prompt to determine what the user wants to do
 function orderItem(){
-
 	inquirer.prompt([
 			{
 				type: "confirm",
@@ -91,8 +83,6 @@ function orderItem(){
 						orderAnotherItem();
 					}
 				})
-
-
 			})
 		}else{
 			console.log("Thank you for your business!  Come back soon!");
@@ -148,7 +138,6 @@ function orderAnotherItem(){
 }
 //called after the user decides which product they want, parameters detrermined in order item function
 function updateInventory(quantity, userResponse){
-
 	connection.query("SELECT * FROM products WHERE ?", {product_name: userResponse}, function(err, res){
 		let currentStock = res[0].stock_quantity;
 		let currentPrice = res[0].price;
@@ -173,7 +162,6 @@ function updateInventory(quantity, userResponse){
 
 				orderItem()
 			}
-
 		);
 	})
 }

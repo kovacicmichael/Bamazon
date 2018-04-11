@@ -150,7 +150,7 @@ function table(){
 }
 //displays the products with a stock less than or equal to 5
 function lowInventory(){
-	connection.query("SELECT * FROM products", function(err, res){
+	connection.query("SELECT * FROM products", function(err, result){
 		if(err) throw err;
 
 		var table = new Table({
@@ -164,8 +164,8 @@ function lowInventory(){
 
 		console.log("Stock is low on these items: \n");
 
-		for(var i = 0; i < res.length; i++){
-			var stock = res[i].stock_quantity;
+		for(var i = 0; i < result.length; i++){
+			var stock = result[i].stock_quantity;
 
 			if(stock <= 5){
 
@@ -204,12 +204,9 @@ function addInventory(item, stock){
 	connection.query("SELECT * FROM products WHERE ?", {product_name: item},
 	function(err, res){
 		if(err) throw err;
-		console.log("currnet stock " + res[0].stock_quantity)
 		currentStock = res[0].stock_quantity
-		console.log("stock " + stock)
 
 		let updateStock = parseInt(currentStock) + parseInt(stock)
-		console.log("update stock " + updateStock)
 
 		connection.query("UPDATE products SET ? WHERE ?", [{
 		stock_quantity: updateStock
@@ -219,7 +216,6 @@ function addInventory(item, stock){
 		function(err, res){
 		if(err) throw err;
 
-		console.log(res)
 		table();
 		})
 	})

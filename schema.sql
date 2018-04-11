@@ -8,7 +8,7 @@ CREATE TABLE products (
 	department_name VARCHAR(255) NOT NULL,
 	price DECIMAL(12, 2) NOT NULL,
   	stock_quantity INT(5),
-  	product_sales DECIMAL(12, 2),
+  	product_sales DECIMAL(12, 2) DEFAULT 0,
 	PRIMARY KEY (id) 
 );
 
@@ -21,26 +21,26 @@ CREATE TABLE departments (
 );
 
 
-INSERT INTO products (product_name, department_name, price, stock_quantity, product_sales)
-VALUES ('Sweatshirt', 'Clothing', 19.99, 20, 0);
+INSERT INTO products (product_name, department_name, price, stock_quantity)
+VALUES ('Sweatshirt', 'Clothing', 19.99, 20);
 
-INSERT INTO products (product_name, department_name, price, stock_quantity, product_sales)
-VALUES ('Trek Bike', 'Outdoor', 999.99, 2, 0);
+INSERT INTO products (product_name, department_name, price, stock_quantity)
+VALUES ('Trek Bike', 'Outdoor', 999.99, 2);
 
-INSERT INTO products (product_name, department_name, price, stock_quantity, product_sales)
-VALUES ('Lotion', "Health and Beauty", 9.99, 20, 0);
+INSERT INTO products (product_name, department_name, price, stock_quantity)
+VALUES ('Lotion', "Health and Beauty", 9.99, 20);
 
-INSERT INTO products (product_name, department_name, price, stock_quantity, product_sales)
-VALUES ('Blanket', 'Bedding', 14.99, 15, 0);
+INSERT INTO products (product_name, department_name, price, stock_quantity)
+VALUES ('Blanket', 'Bedding', 14.99, 15);
 
-INSERT INTO products (product_name, department_name, price, stock_quantity, product_sales)
-VALUES ('MacBook Pro', 'Electronics', 1200, 20, 0);
+INSERT INTO products (product_name, department_name, price, stock_quantity)
+VALUES ('MacBook Pro', 'Electronics', 1200, 20);
 
-INSERT INTO products (product_name, department_name, price, stock_quantity, product_sales)
-VALUES ('Notebook', 'Office Supplies', 5.99, 30, 0);
+INSERT INTO products (product_name, department_name, price, stock_quantity)
+VALUES ('Notebook', 'Office Supplies', 5.99, 30);
 
-INSERT INTO products (product_name, department_name, price, stock_quantity, product_sales)
-VALUES ('FItbit', 'Electronics', 100.99, 25, 0);
+INSERT INTO products (product_name, department_name, price, stock_quantity)
+VALUES ('FItbit', 'Electronics', 100.99, 25);
 
 
 INSERT INTO departments (department_name, over_head_costs)
